@@ -43,6 +43,7 @@ updateField (Nothing:xs) field = updateField xs field
 
 isComplete :: Grid -> Bool
 isComplete grid = foldr ((&&).(>0).snd) True (concat grid)
+-- a change
 
 findNextValues :: Grid -> [Maybe Field]
 findNextValues grid = map (findValue grid) (concat grid)  -- use map with partial function
