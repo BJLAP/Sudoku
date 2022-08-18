@@ -16,13 +16,16 @@ type Field = (Location, Value, ExcludedValues)
 
 input = [[1,0,3,0], [2,0,0,0],[0,0,0,0],[4,0,1,0]] :: InputValues
 input9by9 =[[7,9,0,0,0,3,0,0,0],[0,0,0,0,6,0,0,0,0],[8,0,0,3,0,0,0,7,6],[0,0,0,0,5,0,0,0,2],[0,0,5,4,1,8,0,0,0],[4,0,0,7,0,0,0,0,0],[6,1,0,0,9,0,0,0,8],[0,0,2,3,0,0,0,0,0],[0,0,9,0,0,0,0,5,4]] :: InputValues
+inputvolk =[[6,9,0,0,0,0,3,2,0],[3,0,0,6,8,0,0,0,7],[0,2,0,9,0,7,5,0,0],[4,8,0,0,9,1,0,0,0],[0,5,1,0,0,0,9,3,0],[0,0,0,4,7,0,0,1,5],[0,0,8,2,0,9,0,5,0],[2,0,0,0,4,5,0,0,6],[0,3,6,0,0,0,0,4,9]] :: InputValues
 
-gridSize = 4
+gridSize = 9
+inputGridSmall = calcExcludedValues (createGrid input 0)
 
-field1 = ((0,1),1,[1,3,2]) :: Field
-field2 = ((0,3),0,[1,3]) :: Field
-inputGrid = calcExcludedValues (createGrid input 0)
-testRow = getRow field2 inputGrid
+field1 = ((0,2),0,[7,9,3,5,2,8]) :: Field
+inputGrid = calcExcludedValues (createGrid inputvolk 0)
+testRow = getRow field1 inputGrid
+testSquare = getRow field1 (groupSquares inputGrid)
+testVertical = getRow field1 (transpose inputGrid)
 
 solve :: Grid -> Grid
 solve grid | isComplete grid = grid
@@ -61,7 +64,6 @@ findNextValues grid = map (findValue gridWithExcludedValues) (concat gridWithExc
     where gridWithExcludedValues = calcExcludedValues grid
 
 findValue :: Grid -> Field -> Maybe Field
---findValue grid field | getValue field == 0 = determineValue field (findRelatedFields field grid) 1
 findValue grid field | getValue field == 0 = determineValueGrid grid field 1
 findValue _ _ = Nothing
 
@@ -78,14 +80,6 @@ findRelatedFields field grid = concatMap (listContainsField field) grid ++ conca
 listContainsField :: Field -> [Field] -> [Field]
 listContainsField field fields = if foldr ((||).(== getLocation field).getLocation)False fields then fields else []
 
-determineValue :: Field -> [Field] -> Int -> Maybe Field
-determineValue _ [] _ = Nothing
-determineValue x xs y | y > 0 && y <= gridSize = if isValidValue y xs then Just (getLocation x, y, getExcludedValues x) else determineValue x xs (y + 1)
-determineValue _ _ _ = Nothing
-
--- use excluded values arrays of all related fields (use grid instead of [Field])
--- Todo: correct calcExcludedValues for Fields that have a value (ie. test with calcExcludedValues inputGrid
--- Expected: a field with a value has as excluded values all other values.
 determineValueGrid :: Grid -> Field -> Int -> Maybe Field
 determineValueGrid [[]] _ _ = Nothing
 determineValueGrid grid field y | isJust maybeValueRow = maybeValueRow
@@ -96,30 +90,19 @@ determineValueGrid grid field y | isJust maybeValueRow = maybeValueRow
           maybeValueVerticalRow = determineValueRow field y (getRow field (transpose grid))
           maybeValueSquare = determineValueRow field y (getRow field (groupSquares grid))
 
--- use excluded values arrays of all related fields (use grid instead of [Field])
 determineValueRow :: Field -> Int -> Row -> Maybe Field
 determineValueRow _ _ [] = Nothing
--- Strategy 1 for solving Sudoku: if all possible values but 1 are excluded for a field (because related fields contain this value), this is the valid value
+-- Strategy 1 for solving Sudoku: if all possible values but 1 are excluded for a field
+-- (because related fields contain this value), there is only one possible value
 determineValueRow field y row | y > 0  && y <= gridSize && length(getExcludedValues field) == (gridSize -1 ) = if y `notElem` getExcludedValues field then Just (getLocation field, y, getExcludedValues field) else determineValueRow field (y + 1) row
--- Strategy 2 for solving Sudoku: if a value is excluded in all related fields (i.e. a square or row) than this must be the valid value for this field
-determineValueRow field y row | y > 0  && y <= gridSize = if valueIsExcludedInRow y (removeValue field row) then Just (getLocation field, y, getExcludedValues field) else determineValueRow field (y + 1) row
+-- Strategy 2 for solving Sudoku: if a value is allowed in a field but it is excluded
+-- in all related empty fields (that is empty fields in square or horizontal row or vertical row) than this must be the valid value for this field
+determineValueRow field y row | y > 0  && y <= gridSize = if (y `notElem` getExcludedValues field) && valueIsExcludedInRow y (removeValue field row) then Just (getLocation field, y, getExcludedValues field) else determineValueRow field (y + 1) row
 determineValueRow _ _ _  = Nothing
 
 valueIsExcludedInRow :: Int -> [Field] -> Bool 
 valueIsExcludedInRow _ [] = False
-valueIsExcludedInRow x xs =  all (elem x . getExcludedValues) xs
-
-isValidValue :: Int -> [Field] -> Bool
-isValidValue _ [] = False
-isValidValue x xs = containsAllValues (removeValue x [1..gridSize]) xs
-
-hasValue :: Int -> [Field] -> Bool
-hasValue _ [] = False 
-hasValue x fields = foldr ((||).(== x).getValue) False fields
-
-containsAllValues :: [Int] -> [Field] -> Bool
-containsAllValues _ [] = False
-containsAllValues xs ys = all (\ z -> z `elem` map getValue ys) xs
+valueIsExcludedInRow x xs =  all (elem x . getExcludedValues) (filter (\y -> getValue y == 0) xs)
 
 removeValue :: (Eq a) => a -> [a] -> [a]
 removeValue _ []              = []
