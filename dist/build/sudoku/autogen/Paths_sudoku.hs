@@ -30,10 +30,10 @@ version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
 bindir     = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\bin"
-libdir     = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.4.3\\sudoku-0.1.0.0-6FxB8KG6eKy9dE0dnhXXhJ-sudoku"
+libdir     = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.4.3\\sudoku-0.1.0.0-Ge03UQr4ofmHUrn4Af9Gmn-sudoku"
 dynlibdir  = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.4.3"
 datadir    = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\x86_64-windows-ghc-8.4.3\\sudoku-0.1.0.0"
-libexecdir = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\sudoku-0.1.0.0-6FxB8KG6eKy9dE0dnhXXhJ-sudoku\\x86_64-windows-ghc-8.4.3\\sudoku-0.1.0.0"
+libexecdir = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\sudoku-0.1.0.0-Ge03UQr4ofmHUrn4Af9Gmn-sudoku\\x86_64-windows-ghc-8.4.3\\sudoku-0.1.0.0"
 sysconfdir = "C:\\Users\\PC\\AppData\\Roaming\\cabal\\etc"
 
 getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: IO FilePath

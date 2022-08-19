@@ -93,11 +93,15 @@ determineValueGrid grid field y | isJust maybeValueRow = maybeValueRow
 determineValueRow :: Field -> Int -> Row -> Maybe Field
 determineValueRow _ _ [] = Nothing
 -- Strategy 1 for solving Sudoku: if all possible values but 1 are excluded for a field
--- (because related fields contain this value), there is only one possible value
-determineValueRow field y row | y > 0  && y <= gridSize && length(getExcludedValues field) == (gridSize -1 ) = if y `notElem` getExcludedValues field then Just (getLocation field, y, getExcludedValues field) else determineValueRow field (y + 1) row
+-- (because related fields contain these values), there is only one possible value
+determineValueRow field y row | y > 0  && y <= gridSize && length(getExcludedValues field) == (gridSize -1 ) = if y `notElem` getExcludedValues field 
+    then Just (getLocation field, y, getExcludedValues field) 
+    else determineValueRow field (y + 1) row
 -- Strategy 2 for solving Sudoku: if a value is allowed in a field but it is excluded
 -- in all related empty fields (that is empty fields in square or horizontal row or vertical row) than this must be the valid value for this field
-determineValueRow field y row | y > 0  && y <= gridSize = if (y `notElem` getExcludedValues field) && valueIsExcludedInRow y (removeValue field row) then Just (getLocation field, y, getExcludedValues field) else determineValueRow field (y + 1) row
+determineValueRow field y row | y > 0  && y <= gridSize = if (y `notElem` getExcludedValues field) && valueIsExcludedInRow y (removeValue field row) 
+    then Just (getLocation field, y, getExcludedValues field) 
+    else determineValueRow field (y + 1) row
 determineValueRow _ _ _  = Nothing
 
 valueIsExcludedInRow :: Int -> [Field] -> Bool 

@@ -1,7 +1,7 @@
 module Main where
-import qualified GameLogic
+import GameLogic
 main :: IO ()
 main = do
     putStrLn "Sudoko solver"
-    let resolution = GameLogic.solve GameLogic.inputGrid
+    let resolution = solve inputGrid
     print resolution

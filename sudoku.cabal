@@ -48,14 +48,14 @@ library
   -- exposed-modules:
 
   -- Modules included in this library but not exported.
-  -- other-modules:
+  -- other-modules: 
+
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.11 && <4.12
-
+  build-depends: base >=4.11 && <4.12, split
   -- Directories containing source files.
   hs-source-dirs:      src
 
@@ -68,13 +68,13 @@ executable sudoku
   main-is:             Main.hs
 
   -- Modules included in this executable, other than Main.
-  -- other-modules:
+  other-modules: GameLogic
 
   -- LANGUAGE extensions used by modules in this package.
   -- other-extensions:
 
   -- Other library packages from which modules are imported.
-  build-depends:       base >=4.11 && <4.12
+  build-depends:       base >=4.11 && <4.12, split, cassava
 
   -- Directories containing source files.
   hs-source-dirs:      src
