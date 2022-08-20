@@ -1,7 +1,10 @@
 module Main where
+import IO
 import GameLogic
+import Control.Monad.Reader
 main :: IO ()
 main = do
-    putStrLn "Sudoko solver"
-    let resolution = solve inputGrid
-    print resolution
+    putStrLn "Welcome to Sudoko Solver!"
+    -- todo: read inputGrid from CSV
+    let resolution = runReader solveM inputGrid
+    displayGrid resolution

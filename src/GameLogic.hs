@@ -1,8 +1,9 @@
-module GameLogic(solve,inputGrid,createGrid) where
+module GameLogic(solveM,inputGrid,createGrid, getValue, Grid, Field, Value) where
 
 import Data.List.Split
 import Data.List
 import Data.Maybe
+import Control.Monad.Reader
 
 type Value = Int
 type HorPos = Int
@@ -14,9 +15,11 @@ type InputValues = [[Value]]
 type Grid = [[Field]]
 type Field = (Location, Value, ExcludedValues)
 
+
 input = [[1,0,3,0], [2,0,0,0],[0,0,0,0],[4,0,1,0]] :: InputValues
 input9by9 =[[7,9,0,0,0,3,0,0,0],[0,0,0,0,6,0,0,0,0],[8,0,0,3,0,0,0,7,6],[0,0,0,0,5,0,0,0,2],[0,0,5,4,1,8,0,0,0],[4,0,0,7,0,0,0,0,0],[6,1,0,0,9,0,0,0,8],[0,0,2,3,0,0,0,0,0],[0,0,9,0,0,0,0,5,4]] :: InputValues
 inputvolk =[[6,9,0,0,0,0,3,2,0],[3,0,0,6,8,0,0,0,7],[0,2,0,9,0,7,5,0,0],[4,8,0,0,9,1,0,0,0],[0,5,1,0,0,0,9,3,0],[0,0,0,4,7,0,0,1,5],[0,0,8,2,0,9,0,5,0],[2,0,0,0,4,5,0,0,6],[0,3,6,0,0,0,0,4,9]] :: InputValues
+
 
 gridSize = 9
 inputGridSmall = calcExcludedValues (createGrid input 0)
@@ -26,6 +29,12 @@ inputGrid = calcExcludedValues (createGrid inputvolk 0)
 testRow = getRow field1 inputGrid
 testSquare = getRow field1 (groupSquares inputGrid)
 testVertical = getRow field1 (transpose inputGrid)
+
+solveM :: Reader Grid Grid
+solveM = do
+    inputGame <- ask
+    let result = solve inputGame
+    return result
 
 solve :: Grid -> Grid
 solve grid | isComplete grid = grid
@@ -134,6 +143,6 @@ calcExcludedValuesField grid field = (getLocation field, getValue field, removeV
 getDistinctValues :: [Field] -> [Int]
 getDistinctValues fields = removeValue 0 (nub(map getValue fields))
 
-getRow :: Field -> [Row] -> Row
+getRow :: Field -> [Row] -> Row 
 getRow _ [] = []
 getRow field (r:rs) = if field `elem` r then r else getRow field rs 
