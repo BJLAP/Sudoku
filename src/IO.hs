@@ -1,24 +1,23 @@
-module IO (getValues, displayGrid) where
+module IO (displayGrid, readValuesFromFile) where
 
 import GameLogic
-import Control.Monad.Reader
-
-globalGridSize = return 9 :: Reader String Int
-
-getValues :: Grid -> [[Value]]
-getValues = map (map getValue)
+import Data.List.Split
 
 addSeparator :: [Value] -> [String]
 addSeparator = map ((" | " ++) . show)
---map ((" " ++) . show) [1, 2, 3]
-
---map (("|" ++) . show) [1, 2, 3]
 
 displayLine :: [String] -> IO ()
 displayLine line = mapM_ putStr line >> putStr " |" >> putStrLn ""
 
 displayGrid :: Grid -> IO ()
-displayGrid grid = putStrLn " -----------------" >> mapM_ (displayLine . addSeparator) (getValues grid) >> putStrLn " -------------"
+displayGrid grid = putStrLn " -------------------------------------" >> mapM_ (displayLine . addSeparator) (getValues grid) >> putStrLn " -------------------------------------"
 
-test :: a -> IO ()
-test _ = putStr "Hello" >> putStrLn " World" 
+readLines :: FilePath -> IO [String]
+readLines = fmap (tail . lines) . readFile
+
+readValuesFromFile :: String -> IO [[Int]]
+readValuesFromFile fileName = do
+    text <- readLines fileName
+    let convertedValues = map (splitOn ";") text
+    let convertedInts = map (map (read::String->Int)) convertedValues
+    return convertedInts

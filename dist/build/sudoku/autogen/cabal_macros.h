@@ -33,16 +33,16 @@
   (major1) == 0 && (major2) == 2 && (minor) <= 3)
 #endif /* MIN_VERSION_split */
 
-/* package cassava-0.5.3.0 */
-#ifndef VERSION_cassava
-#define VERSION_cassava "0.5.3.0"
-#endif /* VERSION_cassava */
-#ifndef MIN_VERSION_cassava
-#define MIN_VERSION_cassava(major1,major2,minor) (\
-  (major1) <  0 || \
-  (major1) == 0 && (major2) <  5 || \
-  (major1) == 0 && (major2) == 5 && (minor) <= 3)
-#endif /* MIN_VERSION_cassava */
+/* package mtl-2.2.2 */
+#ifndef VERSION_mtl
+#define VERSION_mtl "2.2.2"
+#endif /* VERSION_mtl */
+#ifndef MIN_VERSION_mtl
+#define MIN_VERSION_mtl(major1,major2,minor) (\
+  (major1) <  2 || \
+  (major1) == 2 && (major2) <  2 || \
+  (major1) == 2 && (major2) == 2 && (minor) <= 2)
+#endif /* MIN_VERSION_mtl */
 
 /* tool alex-3.2.4 */
 #ifndef TOOL_VERSION_alex

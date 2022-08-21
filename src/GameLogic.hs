@@ -1,4 +1,4 @@
-module GameLogic(solveM,inputGrid,createGrid, getValue, Grid, Field, Value) where
+module GameLogic(solveM, createGrid, getValues, Grid, Field, Value) where
 
 import Data.List.Split
 import Data.List
@@ -15,20 +15,7 @@ type InputValues = [[Value]]
 type Grid = [[Field]]
 type Field = (Location, Value, ExcludedValues)
 
-
-input = [[1,0,3,0], [2,0,0,0],[0,0,0,0],[4,0,1,0]] :: InputValues
-input9by9 =[[7,9,0,0,0,3,0,0,0],[0,0,0,0,6,0,0,0,0],[8,0,0,3,0,0,0,7,6],[0,0,0,0,5,0,0,0,2],[0,0,5,4,1,8,0,0,0],[4,0,0,7,0,0,0,0,0],[6,1,0,0,9,0,0,0,8],[0,0,2,3,0,0,0,0,0],[0,0,9,0,0,0,0,5,4]] :: InputValues
-inputvolk =[[6,9,0,0,0,0,3,2,0],[3,0,0,6,8,0,0,0,7],[0,2,0,9,0,7,5,0,0],[4,8,0,0,9,1,0,0,0],[0,5,1,0,0,0,9,3,0],[0,0,0,4,7,0,0,1,5],[0,0,8,2,0,9,0,5,0],[2,0,0,0,4,5,0,0,6],[0,3,6,0,0,0,0,4,9]] :: InputValues
-
-
 gridSize = 9
-inputGridSmall = calcExcludedValues (createGrid input 0)
-
-field1 = ((0,2),0,[7,9,3,5,2,8]) :: Field
-inputGrid = calcExcludedValues (createGrid inputvolk 0)
-testRow = getRow field1 inputGrid
-testSquare = getRow field1 (groupSquares inputGrid)
-testVertical = getRow field1 (transpose inputGrid)
 
 solveM :: Reader Grid Grid
 solveM = do
@@ -40,8 +27,6 @@ solve :: Grid -> Grid
 solve grid | isComplete grid = grid
 solve grid = if grid /= updatedGrid then solve updatedGrid else grid
     where updatedGrid = updateGrid grid (findNextValues grid)
-
-test = concat (updateGrid (createGrid input 0)  [Just ((0,0), 3,[])])
 
 createGrid :: InputValues -> Int -> Grid
 createGrid [] _ = []
@@ -128,6 +113,9 @@ getLocation (l,_,_) = l
 getValue :: Field -> Value
 getValue (_,v,_) = v
 
+getValues :: Grid -> [[Value]]
+getValues = map (map getValue)
+
 getExcludedValues :: Field -> ExcludedValues
 getExcludedValues (_,_,e) = e
 
@@ -146,3 +134,22 @@ getDistinctValues fields = removeValue 0 (nub(map getValue fields))
 getRow :: Field -> [Row] -> Row 
 getRow _ [] = []
 getRow field (r:rs) = if field `elem` r then r else getRow field rs 
+
+--- Todo: remove below lines (used for testing)
+
+test = concat (updateGrid (createGrid input 0)  [Just ((0,0), 3,[])])
+
+inputGridSmall = calcExcludedValues (createGrid input 0)
+
+field1 = ((0,2),0,[7,9,3,5,2,8]) :: Field
+inputGrid = calcExcludedValues (createGrid inputvolk 0)
+testRow = getRow field1 inputGrid
+testSquare = getRow field1 (groupSquares inputGrid)
+testVertical = getRow field1 (transpose inputGrid)
+
+
+input = [[1,0,3,0], [2,0,0,0],[0,0,0,0],[4,0,1,0]] :: InputValues
+input9by9 =[[7,9,0,0,0,3,0,0,0],[0,0,0,0,6,0,0,0,0],[8,0,0,3,0,0,0,7,6],[0,0,0,0,5,0,0,0,2],[0,0,5,4,1,8,0,0,0],[4,0,0,7,0,0,0,0,0],[6,1,0,0,9,0,0,0,8],[0,0,2,3,0,0,0,0,0],[0,0,9,0,0,0,0,5,4]] :: InputValues
+inputvolk =[[6,9,0,0,0,0,3,2,0],[3,0,0,6,8,0,0,0,7],[0,2,0,9,0,7,5,0,0],[4,8,0,0,9,1,0,0,0],[0,5,1,0,0,0,9,3,0],[0,0,0,4,7,0,0,1,5],[0,0,8,2,0,9,0,5,0],[2,0,0,0,4,5,0,0,6],[0,3,6,0,0,0,0,4,9]] :: InputValues
+
+
