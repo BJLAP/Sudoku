@@ -2,6 +2,7 @@ module IO (displayGrid, readValuesFromFile) where
 
 import GameLogic
 import Data.List.Split
+import Control.Exception
 
 addSeparator :: [Value] -> [String]
 addSeparator = map ((" | " ++) . show)
@@ -21,3 +22,11 @@ readValuesFromFile fileName = do
     let convertedValues = map (splitOn ";") text
     let convertedInts = map (map (read::String->Int)) convertedValues
     return convertedInts
+
+--tryReadFile :: FilePath -> IO()
+--tryReadFile filePath = do 
+--    eitherErrorOrFile <- try (readFile filePath)
+--    case eitherErrorOrFile of
+--        Left _ -> print "error"
+--        Right content -> print content
+

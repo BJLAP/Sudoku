@@ -19,7 +19,7 @@ synopsis:            Learner project, developing a Sudoku game
 -- description:
 
 -- URL for the project homepage or repository.
-homepage:            https://projecthours.online
+homepage:            https://projecthours.online/about-us/
 
 -- The license under which the package is released.
 license:             PublicDomain
